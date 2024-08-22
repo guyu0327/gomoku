@@ -1,3 +1,6 @@
+import numpy as np
+
+from itertools import product
 from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
 from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QFrame
 
@@ -114,8 +117,8 @@ class MainWindow(QMainWindow):
     def draw_chess(self, painter, coord):
         color = QColor("black") if coord['color'] else QColor("white")
         painter.setBrush(QBrush(color))
-        painter.drawEllipse(coord['x'] - self.chess_size / 2,
-                            coord['y'] - self.chess_size / 2,
+        painter.drawEllipse(coord['x'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
+                            coord['y'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
                             self.chess_size,
                             self.chess_size)
 
@@ -130,40 +133,53 @@ class MainWindow(QMainWindow):
                 or y > self.chessboard_move + self.chessboard_size + 10:
             return
         # 计算落子位置
-        x = round((x - self.chessboard_move) / self.grid_size) * self.grid_size + self.chessboard_move
-        y = round((y - self.chessboard_move) / self.grid_size) * self.grid_size + self.chessboard_move
+        x = np.round((x - self.chessboard_move) / self.grid_size)
+        y = np.round((y - self.chessboard_move) / self.grid_size)
+
         # 判断位置上是否已有棋子
         if any(coord['x'] == x and coord['y'] == y for coord in self.chess_coord):
             return
         # 将棋子坐标添加到列表中
         self.chess_coord.append({'x': x, 'y': y, 'color': self.chess_color})
         # 切换颜色
-        # self.chess_color = not self.chess_color
+        self.chess_color = not self.chess_color
         # 重绘
         self.update()
         # 判断是否胜利
         self.check_win()
 
-    # 判断是否胜利 TODO 这块逻辑有问题
+    # 判断是否胜利
     def check_win(self):
-        new_coord = self.chess_coord[-1]
-        # 连接数
-        flag = 1
-        for coord in self.chess_coord:
-            index = 1
-            while (int(coord['x']) == int(new_coord['x'] + index * self.grid_size)
-                   and coord['y'] == new_coord['y']
-                   and coord['color'] == new_coord['color']):
-                flag += 1
-                index += 1
-            index = 1
-            while (int(coord['x']) == int(new_coord['x'] - index * self.grid_size)
-                   and coord['y'] == new_coord['y']
-                   and coord['color'] == new_coord['color']):
-                flag += 1
-                index += 1
+        linking_coords = self.check_link()
+        if linking_coords:
+            print(f"颜色{linking_coords[-1]['color']}赢了")
+            print(f"应该高亮的棋子: {linking_coords}")
 
-        print('flag', flag)
+    # 判断连接数
+    def check_link(self):
+        last_coord = self.chess_coord[-1]
+        directions = [
+            (1, 0),  # 垂直方向
+            (0, 1),  # 水平方向
+            (1, 1),  # 右对角线
+            (-1, 1)  # 左对角线
+        ]
+
+        for direction, method in product(directions, range(5)):
+            linking_coords = []
+            for i in range(5):
+                new_coord = {
+                    'x': last_coord['x'] + direction[0] * (i - method),
+                    'y': last_coord['y'] + direction[1] * (i - method),
+                    'color': last_coord['color']
+                }
+                if new_coord in self.chess_coord:
+                    linking_coords.append(new_coord)
+
+            if len(linking_coords) == 5:
+                return linking_coords
+
+        return False
 
 
 def main():
