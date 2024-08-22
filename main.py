@@ -1,8 +1,8 @@
-import numpy as np
-
 from itertools import product
+
+import numpy as np
 from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
-from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QFrame, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QMessageBox, QPushButton
 
 
 # 主窗口
@@ -27,18 +27,29 @@ class MainWindow(QMainWindow):
         # 正方形棋盘位置大小
         self.chessboard_size = int(self.main_height * 0.9)
         self.chessboard_move = int(self.chessboard_size - self.chessboard_size * 0.95)
+        self.chessboard_size_move = self.chessboard_size + self.chessboard_move
         # 正方形网格间距
         self.grid_size = self.chessboard_size / 15
+
+        # 按钮大小
+        self.button_width = int(self.main_width * 0.2)
+        self.button_height = int(self.main_height * 0.05)
+        # 按钮位置
+        self.button_x = self.chessboard_size_move + (
+                (self.main_width - self.chessboard_size_move) / 2 - self.button_width / 2)
+        self.button_y = self.main_height / 3
 
         # 棋子坐标
         self.chess_coord = []
         # 棋子颜色
         self.chess_color = True
         # 棋子大小
-        self.chess_size = 40
+        self.chess_size = self.grid_size / 1.2
 
         # 初始化UI
         self.initUI()
+        # 初始化按钮
+        self.initButton()
 
     # 初始化UI
     def initUI(self):
@@ -56,6 +67,55 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.container)
         # 重写他的鼠标点击事件
         self.container.mousePressEvent = self.mouse_clicked
+
+    # 初始化按钮
+    def initButton(self):
+        buttons = [
+            {
+                'text': '选择模式',
+                'clicked': 'select_mode'
+            },
+            {
+                'text': '重新开始',
+                'clicked': 'start_game'
+            },
+            {
+                'text': '悔棋',
+                'clicked': 'start_game'
+            },
+            {
+                'text': '认输',
+                'clicked': 'start_game'
+            },
+            {
+                'text': '和棋',
+                'clicked': 'start_game'
+            }]
+
+        for i, button in enumerate(buttons):
+            start_button = QPushButton(self.container)
+            start_button.setText(button['text'])
+            start_button.setGeometry(self.button_x, self.button_y + self.button_height * i, self.button_width,
+                                     self.button_height)
+            start_button.clicked.connect(getattr(self, button['clicked']))
+
+    # 选择模式
+    def select_mode(self):
+        mode = QMessageBox(QMessageBox.Question, "选择", "请选择游戏模式")
+        pvp = mode.addButton(self.tr("PVP"), QMessageBox.YesRole)
+        pve = mode.addButton(self.tr("PVE"), QMessageBox.NoRole)
+        mode.exec_()
+        if mode.clickedButton() == pvp:
+            self.start_game()
+        elif mode.clickedButton() == pve:
+            # TODO 添加PVE模式
+            self.select_mode()
+
+    # 开始游戏
+    def start_game(self):
+        self.chess_coord = []
+        self.chess_color = True
+        self.update()
 
     # 重写绘制事件
     def paintEvent(self, event):
@@ -82,11 +142,11 @@ class MainWindow(QMainWindow):
             painter.drawLine(self.grid_size * i + self.chessboard_move,
                              self.chessboard_move,
                              self.grid_size * i + self.chessboard_move,
-                             self.chessboard_move + self.chessboard_size)
+                             self.chessboard_size_move)
             # 横向线
             painter.drawLine(self.chessboard_move,
                              self.grid_size * i + self.chessboard_move,
-                             self.chessboard_move + self.chessboard_size,
+                             self.chessboard_size_move,
                              self.grid_size * i + self.chessboard_move)
 
         # 绘制四个点
@@ -122,9 +182,9 @@ class MainWindow(QMainWindow):
         y = event.pos().y()
         # 限制点击区域
         if x < self.chessboard_move - 10 or \
-                x > self.chessboard_move + self.chessboard_size + 10 or \
+                x > self.chessboard_size_move + 10 or \
                 y < self.chessboard_move - 10 \
-                or y > self.chessboard_move + self.chessboard_size + 10:
+                or y > self.chessboard_size_move + 10:
             return
         # 计算落子位置
         x = np.round((x - self.chessboard_move) / self.grid_size)
@@ -148,13 +208,15 @@ class MainWindow(QMainWindow):
         linking_coords = self.check_link()
         if linking_coords:
             color = linking_coords[-1]['color']
-            msg = QMessageBox.question(self, "游戏结束", f"恭喜{'黑方' if color else '白方'}胜利！",
-                                       QMessageBox.Yes, QMessageBox.Yes)
+            QMessageBox.information(self, "游戏结束", f"恭喜{'黑方' if color else '白方'}胜利！",
+                                          QMessageBox.Yes, QMessageBox.Yes)
+            self.start_game()
             return
         # 判断棋盘空间是否已满
         if len(self.chess_coord) == 225:
-            msg = QMessageBox.question(self, "游戏结束", f"棋盘已满，平局结束！",
-                                       QMessageBox.Yes, QMessageBox.Yes)
+            QMessageBox.information(self, "游戏结束", f"棋盘已满，平局结束！",
+                                          QMessageBox.Yes, QMessageBox.Yes)
+            self.start_game()
             return
 
     # 判断连接数
