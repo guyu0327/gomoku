@@ -24,8 +24,6 @@ class MainWindow(QMainWindow):
         # 整体容器
         self.container = QWidget(self)
 
-        # 正方形棋盘
-        self.chessboard = QFrame(self.container)
         # 正方形棋盘位置大小
         self.chessboard_size = int(self.main_height * 0.9)
         self.chessboard_move = int(self.chessboard_size - self.chessboard_size * 0.95)
@@ -150,7 +148,7 @@ class MainWindow(QMainWindow):
         linking_coords = self.check_link()
         if linking_coords:
             color = linking_coords[-1]['color']
-            msg = QMessageBox.question(self, "游戏结束", f"恭喜{'红方' if color else '黑方'}赢了！",
+            msg = QMessageBox.question(self, "游戏结束", f"恭喜{'黑方' if color else '白方'}胜利！",
                                        QMessageBox.Yes, QMessageBox.Yes)
             return
         # 判断棋盘空间是否已满
