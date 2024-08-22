@@ -92,12 +92,12 @@ class MainWindow(QMainWindow):
                 'clicked': 'start_game'
             }]
 
-        for i, button in enumerate(buttons):
-            start_button = QPushButton(self.container)
-            start_button.setText(button['text'])
-            start_button.setGeometry(self.button_x, self.button_y + self.button_height * i, self.button_width,
-                                     self.button_height)
-            start_button.clicked.connect(getattr(self, button['clicked']))
+        for i, info in enumerate(buttons):
+            button = QPushButton(self.container)
+            button.setText(info['text'])
+            button.setGeometry(self.button_x, self.button_y + self.button_height * i, self.button_width,
+                               self.button_height)
+            button.clicked.connect(getattr(self, info['clicked']))
 
     # 选择模式
     def select_mode(self):
@@ -209,13 +209,13 @@ class MainWindow(QMainWindow):
         if linking_coords:
             color = linking_coords[-1]['color']
             QMessageBox.information(self, "游戏结束", f"恭喜{'黑方' if color else '白方'}胜利！",
-                                          QMessageBox.Yes, QMessageBox.Yes)
+                                    QMessageBox.Yes, QMessageBox.Yes)
             self.start_game()
             return
         # 判断棋盘空间是否已满
         if len(self.chess_coord) == 225:
             QMessageBox.information(self, "游戏结束", f"棋盘已满，平局结束！",
-                                          QMessageBox.Yes, QMessageBox.Yes)
+                                    QMessageBox.Yes, QMessageBox.Yes)
             self.start_game()
             return
 
