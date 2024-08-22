@@ -2,7 +2,7 @@ import numpy as np
 
 from itertools import product
 from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
-from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QFrame
+from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication, QFrame, QMessageBox
 
 
 # 主窗口
@@ -59,12 +59,6 @@ class MainWindow(QMainWindow):
         # 重写他的鼠标点击事件
         self.container.mousePressEvent = self.mouse_clicked
 
-        # 创建正方形棋盘
-        self.chessboard.setFrameShape(QFrame.StyledPanel)
-        # 设置正方形棋盘位置和大小
-        self.chessboard.setFixedSize(self.chessboard_size, self.chessboard_size)
-        self.chessboard.move(self.chessboard_move, self.chessboard_move)
-
     # 重写绘制事件
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -115,8 +109,10 @@ class MainWindow(QMainWindow):
 
     # 绘制棋子
     def draw_chess(self, painter, coord):
-        color = QColor("black") if coord['color'] else QColor("white")
-        painter.setBrush(QBrush(color))
+        brush_color = QColor("black") if coord['color'] else QColor("white")
+        painter.setBrush(QBrush(brush_color))
+        pen = QPen(QColor("yellow"), 2) if coord.get('outline', False) else QPen(QColor("black"), 1)
+        painter.setPen(pen)
         painter.drawEllipse(coord['x'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
                             coord['y'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
                             self.chess_size,
@@ -126,7 +122,7 @@ class MainWindow(QMainWindow):
     def mouse_clicked(self, event):
         x = event.pos().x()
         y = event.pos().y()
-        # 限制点击位置
+        # 限制点击区域
         if x < self.chessboard_move - 10 or \
                 x > self.chessboard_move + self.chessboard_size + 10 or \
                 y < self.chessboard_move - 10 \
@@ -150,10 +146,18 @@ class MainWindow(QMainWindow):
 
     # 判断是否胜利
     def check_win(self):
+        # 判断是否五子连珠
         linking_coords = self.check_link()
         if linking_coords:
-            print(f"颜色{linking_coords[-1]['color']}赢了")
-            print(f"应该高亮的棋子: {linking_coords}")
+            color = linking_coords[-1]['color']
+            msg = QMessageBox.question(self, "游戏结束", f"恭喜{'红方' if color else '黑方'}赢了！",
+                                       QMessageBox.Yes, QMessageBox.Yes)
+            return
+        # 判断棋盘空间是否已满
+        if len(self.chess_coord) == 225:
+            msg = QMessageBox.question(self, "游戏结束", f"棋盘已满，平局结束！",
+                                       QMessageBox.Yes, QMessageBox.Yes)
+            return
 
     # 判断连接数
     def check_link(self):
@@ -174,9 +178,12 @@ class MainWindow(QMainWindow):
                     'color': last_coord['color']
                 }
                 if new_coord in self.chess_coord:
+                    new_coord['outline'] = True
                     linking_coords.append(new_coord)
 
             if len(linking_coords) == 5:
+                self.chess_coord.extend(linking_coords)
+                self.update()
                 return linking_coords
 
         return False
