@@ -47,11 +47,13 @@ def drawChessboard(self):
     # 绘制四个点
     dot_move1 = self.grid_size * 3
     dot_move2 = self.grid_size * 11
+    dot_move3 = self.grid_size * 7
     dot_size = 10
     points = [(dot_move1, dot_move1),
               (dot_move2, dot_move1),
               (dot_move2, dot_move2),
-              (dot_move1, dot_move2)]
+              (dot_move1, dot_move2),
+              (dot_move3, dot_move3)]
     for x, y in points:
         x += self.chessboard_move - dot_size / 2
         y += self.chessboard_move - dot_size / 2
