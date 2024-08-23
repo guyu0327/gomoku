@@ -46,6 +46,9 @@ class MainWindow(QMainWindow):
         # 棋子大小
         self.chess_size = self.grid_size / 1.2
 
+        # 游戏模式 0：单机 1：人机 2：联机
+        self.game_mode = 0
+
         # 初始化UI
         self.initUI()
         # 初始化按钮
@@ -99,15 +102,22 @@ class MainWindow(QMainWindow):
 
     # 选择模式
     def select_mode(self):
-        mode = QMessageBox(QMessageBox.Question, "选择", "请选择游戏模式")
-        pvp = mode.addButton(self.tr("PVP"), QMessageBox.YesRole)
-        pve = mode.addButton(self.tr("PVE"), QMessageBox.NoRole)
-        mode.exec_()
-        if mode.clickedButton() == pvp:
+        msg = QMessageBox(QMessageBox.Question, "选择", "请选择游戏模式")
+        one = msg.addButton(self.tr("单机"), QMessageBox.AcceptRole)
+        two = msg.addButton(self.tr("人机"), QMessageBox.AcceptRole)
+        three = msg.addButton(self.tr("联机"), QMessageBox.AcceptRole)
+        four = msg.addButton(self.tr("退出"), QMessageBox.AcceptRole)
+        self.game_mode = msg.exec_()
+        if msg.clickedButton() == one:
             self.start_game()
-        elif mode.clickedButton() == pve:
-            # TODO 添加PVE模式
+        elif msg.clickedButton() == two:
+            # TODO 添加人机模式
             self.select_mode()
+        elif msg.clickedButton() == three:
+            # TODO 添加联机模式
+            self.select_mode()
+        elif msg.clickedButton() == four:
+            exit()
 
     # 开始游戏
     def start_game(self):
