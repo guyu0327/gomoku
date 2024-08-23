@@ -50,6 +50,8 @@ class MainWindow(QMainWindow):
         self.initUI()
         # 初始化按钮
         self.initButton()
+        # 选择游戏模式
+        self.select_mode()
 
     # 初始化UI
     def initUI(self):
@@ -81,15 +83,11 @@ class MainWindow(QMainWindow):
             },
             {
                 'text': '悔棋',
-                'clicked': 'start_game'
+                'clicked': 'regret'
             },
             {
                 'text': '认输',
-                'clicked': 'start_game'
-            },
-            {
-                'text': '和棋',
-                'clicked': 'start_game'
+                'clicked': 'give_up'
             }]
 
         for i, info in enumerate(buttons):
@@ -116,6 +114,19 @@ class MainWindow(QMainWindow):
         self.chess_coord = []
         self.chess_color = True
         self.update()
+
+    # 悔棋
+    def regret(self):
+        if len(self.chess_coord) > 0:
+            self.chess_coord.pop()
+            self.update()
+
+    # 认输
+    def give_up(self):
+        QMessageBox.information(self, "游戏结束",
+                                f"{'黑方' if self.chess_color else '白方'}认输，恭喜{'黑方' if not self.chess_color else '白方'}胜利！",
+                                QMessageBox.Yes, QMessageBox.Yes)
+        self.start_game()
 
     # 重写绘制事件
     def paintEvent(self, event):
