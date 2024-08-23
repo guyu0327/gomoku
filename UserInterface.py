@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPen, QColor, QBrush, QPainter
 
 
@@ -55,6 +56,10 @@ def drawChessboard(self):
         y += self.chessboard_move - dot_size / 2
         painter.drawEllipse(x, y, dot_size, dot_size)
 
+    # 绘制预落子
+    if self.advance_chess_coord:
+        drawChess(self, painter, self.advance_chess_coord)
+
     # 绘制棋子
     for coord in self.chess_coord:
         drawChess(self, painter, coord)
@@ -62,10 +67,18 @@ def drawChessboard(self):
 
 # 绘制棋子
 def drawChess(self, painter, coord):
-    brush_color = QColor("black") if coord['color'] else QColor("white")
-    painter.setBrush(QBrush(brush_color))
+    # 普通棋子
+    brush = QBrush(QColor("black")) if coord.get('color', True) else QBrush(QColor("white"))
+    # 胜利后棋子
     pen = QPen(QColor("yellow"), 2) if coord.get('outline', False) else QPen(QColor("black"), 1)
+    # 预落下棋子
+    if coord.get('calculate', False):
+        brush = QBrush(QColor(0, 0, 0, 20))
+        pen.setStyle(Qt.DashLine)
+
+    painter.setBrush(brush)
     painter.setPen(pen)
+
     painter.drawEllipse(coord['x'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
                         coord['y'] * self.grid_size + self.chessboard_move - self.chess_size / 2,
                         self.chess_size,

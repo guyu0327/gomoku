@@ -1,35 +1,7 @@
-import numpy as np
 from itertools import product
 from PyQt5.QtWidgets import QMessageBox
 
 from ButtonFunction import startGame
-
-
-# 控制落子
-def ctrlChess(self, event):
-    x = event.pos().x()
-    y = event.pos().y()
-    # 限制点击区域
-    if x < self.chessboard_move - 10 or \
-            x > self.chessboard_size_move + 10 or \
-            y < self.chessboard_move - 10 \
-            or y > self.chessboard_size_move + 10:
-        return
-    # 计算落子位置
-    x = np.round((x - self.chessboard_move) / self.grid_size)
-    y = np.round((y - self.chessboard_move) / self.grid_size)
-
-    # 判断位置上是否已有棋子
-    if any(coord['x'] == x and coord['y'] == y for coord in self.chess_coord):
-        return
-    # 将棋子坐标添加到列表中
-    self.chess_coord.append({'x': x, 'y': y, 'color': self.chess_color})
-    # 切换颜色
-    self.chess_color = not self.chess_color
-    # 重绘
-    self.update()
-    # 判断是否胜利
-    checkWin(self)
 
 
 # 判断是否胜利

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication
 
 from ButtonFunction import initButton, selectMode
-from ProduceResult import ctrlChess
+from MouseFunction import containerMouseClicked, containerMouseMove
 from UserInterface import initUI, drawChessboard
 
 
@@ -23,8 +23,12 @@ class MainWindow(QMainWindow):
 
         # 整体容器
         self.container = QWidget(self)
-        # 重写他的鼠标点击事件
-        self.container.mousePressEvent = self.mouseClicked
+        # 重写鼠标点击事件
+        self.container.mousePressEvent = self.containerMousePressEvent
+        # 开启鼠标跟踪
+        self.container.setMouseTracking(True)
+        # 重新鼠标移入事件
+        self.container.mouseMoveEvent = self.containerMouseMoveEvent
 
         # 正方形棋盘位置大小
         self.chessboard_size = int(self.main_height * 0.9)
@@ -47,6 +51,8 @@ class MainWindow(QMainWindow):
         self.chess_color = True
         # 棋子大小
         self.chess_size = self.grid_size / 1.2
+        # 预要落子的坐标
+        self.advance_chess_coord = {}
 
         # 游戏模式 0：单机 1：人机 2：联机
         self.game_mode = 0
@@ -62,6 +68,10 @@ class MainWindow(QMainWindow):
     def paintEvent(self, event):
         drawChessboard(self)
 
-    # 重写鼠标点击事件
-    def mouseClicked(self, event):
-        ctrlChess(self, event)
+    # 重写container的鼠标点击事件
+    def containerMousePressEvent(self, event):
+        containerMouseClicked(self, event)
+
+    # 重写container的鼠标移入事件
+    def containerMouseMoveEvent(self, event):
+        containerMouseMove(self, event)
