@@ -29,9 +29,9 @@ def drawChessboard(self):
     painter.setBrush(QBrush(QColor("black")))
 
     # 绘制方格线
-    for i in range(16):
+    for i in range(15):
         # 设置线的粗细
-        pen = QPen(QColor("black"), 2) if i % 5 == 0 else QPen(QColor("black"), 1)
+        pen = QPen(QColor("black"), 2) if i == 3 or i == 11 else QPen(QColor("black"), 1)
         painter.setPen(pen)
         # 纵向线
         painter.drawLine(self.grid_size * i + self.chessboard_move,
@@ -45,12 +45,13 @@ def drawChessboard(self):
                          self.grid_size * i + self.chessboard_move)
 
     # 绘制四个点
-    dot_move = self.grid_size * 5
+    dot_move1 = self.grid_size * 3
+    dot_move2 = self.grid_size * 11
     dot_size = 10
-    points = [(dot_move, dot_move),
-              (dot_move * 2, dot_move),
-              (dot_move * 2, dot_move * 2),
-              (dot_move, dot_move * 2)]
+    points = [(dot_move1, dot_move1),
+              (dot_move2, dot_move1),
+              (dot_move2, dot_move2),
+              (dot_move1, dot_move2)]
     for x, y in points:
         x += self.chessboard_move - dot_size / 2
         y += self.chessboard_move - dot_size / 2

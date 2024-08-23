@@ -24,6 +24,8 @@ def checkWin(self):
 
 # 计算连接数
 def checkLink(self):
+    if not self.chess_coord:
+        return False
     last_coord = self.chess_coord[-1]
     directions = [
         (1, 0),  # 垂直方向

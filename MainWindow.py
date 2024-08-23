@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.chessboard_move = int(self.chessboard_size - self.chessboard_size * 0.95)
         self.chessboard_size_move = self.chessboard_size + self.chessboard_move
         # 正方形网格间距
-        self.grid_size = self.chessboard_size / 15
+        self.grid_size = self.chessboard_size / 14
 
         # 按钮大小
         self.button_width = int(self.main_width * 0.2)
