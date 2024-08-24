@@ -62,7 +62,7 @@ def startGame(self):
 def regret(self):
     if len(self.chess_coord) > 0:
         self.chess_coord.pop()
-        if self.game_mode == 1:
+        if self.game_mode == 1 and len(self.chess_coord) > 0:
             self.chess_coord.pop()
         self.update()
 
