@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import QPushButton, QMessageBox
 from functools import partial
 
-
 # 初始化按钮
+from AIAlgorithm import selectSquads
+
+
 def initButton(self):
     buttons = [
         {
@@ -33,21 +35,14 @@ def initButton(self):
 # 选择模式
 def selectMode(self):
     msg = QMessageBox(QMessageBox.Question, "选择", "请选择游戏模式")
-    one = msg.addButton(self.tr("单机"), QMessageBox.AcceptRole)
-    two = msg.addButton(self.tr("人机"), QMessageBox.AcceptRole)
-    three = msg.addButton(self.tr("联机"), QMessageBox.AcceptRole)
-    four = msg.addButton(self.tr("退出"), QMessageBox.AcceptRole)
+    msg.addButton(self.tr("单机"), QMessageBox.AcceptRole)
+    msg.addButton(self.tr("人机"), QMessageBox.AcceptRole)
+    msg.addButton(self.tr("联机"), QMessageBox.AcceptRole)
+    exit_button = msg.addButton(self.tr("退出"), QMessageBox.AcceptRole)
     self.game_mode = msg.exec_()
-    if msg.clickedButton() == one:
-        startGame(self)
-    elif msg.clickedButton() == two:
-        # TODO 添加人机模式
-        selectMode(self)
-    elif msg.clickedButton() == three:
-        # TODO 添加联机模式
-        selectMode(self)
-    elif msg.clickedButton() == four:
+    if msg.clickedButton() == exit_button:
         exit()
+    startGame(self)
 
 
 # 开始游戏
@@ -55,12 +50,20 @@ def startGame(self):
     self.chess_coord = []
     self.chess_color = True
     self.update()
+    if self.game_mode == 1:
+        selectSquads(self)
+    if self.game_mode == 2:
+        QMessageBox.information(self, "提示", "功能暂未开发",
+                                QMessageBox.Yes, QMessageBox.Yes)
+        selectMode(self)
 
 
 # 悔棋
 def regret(self):
     if len(self.chess_coord) > 0:
         self.chess_coord.pop()
+        if self.game_mode == 1:
+            self.chess_coord.pop()
         self.update()
 
 

@@ -1,5 +1,6 @@
 import numpy as np
 
+from AIAlgorithm import aiGame
 from ProduceResult import checkWin
 
 
@@ -32,6 +33,7 @@ def containerMouseClicked(self, event):
         self.chess_coord.append(coord)
     # 切换颜色
     self.chess_color = not self.chess_color
+    aiGame(self)
     # 重绘
     self.update()
     # 判断是否胜利
