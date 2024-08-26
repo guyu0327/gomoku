@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import QPushButton, QMessageBox
 from functools import partial
 
-# 初始化按钮
+from PyQt5.QtWidgets import QPushButton, QMessageBox
+
 from AIAlgorithm import selectSquads
+from OnlineFunction import selectSide
 
 
+# 初始化按钮
 def initButton(self):
     buttons = [
         {
@@ -53,9 +55,7 @@ def startGame(self):
     if self.game_mode == 1:
         selectSquads(self)
     if self.game_mode == 2:
-        QMessageBox.information(self, "提示", "功能暂未开发",
-                                QMessageBox.Yes, QMessageBox.Yes)
-        selectMode(self)
+        selectSide(self)
 
 
 # 悔棋

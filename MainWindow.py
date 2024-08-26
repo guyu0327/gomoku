@@ -58,6 +58,12 @@ class MainWindow(QMainWindow):
         # 游戏模式 0：单机 1：人机 2：联机
         self.game_mode = 0
 
+        # 服务端IP
+        # self.serverIp = '127.0.0.1'
+        self.serverIp = '192.168.1.179'
+        # 服务端口
+        self.serverPort = 25565
+
         # 初始化UI
         initUI(self)
         # 初始化按钮
