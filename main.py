@@ -5,9 +5,8 @@ from MainWindow import MainWindow
 
 def main():
     app = QApplication([])
-    form = MainWindow()
-    # 显示窗口
-    form.show()
+    # 创建主窗口
+    MainWindow()
     # 进入事件循环
     app.exec_()
 

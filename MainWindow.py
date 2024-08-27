@@ -1,3 +1,5 @@
+import socket
+
 from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication
 
 from ButtonFunction import initButton, selectMode
@@ -59,15 +61,19 @@ class MainWindow(QMainWindow):
         self.game_mode = 0
 
         # 服务端IP
-        # self.serverIp = '127.0.0.1'
-        self.serverIp = '192.168.1.179'
+        self.server_ip = '192.168.1.179'
         # 服务端口
-        self.serverPort = 25565
+        self.server_port = 25565
+        # TCP/IP服务器
+        self.tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # TCP/IP的socket
+        self.tcp_socket = None
 
         # 初始化UI
         initUI(self)
         # 初始化按钮
         initButton(self)
+        self.show()
         # 选择游戏模式
         selectMode(self)
 

@@ -1,8 +1,9 @@
 import json
 import socket
+import threading
+from functools import partial
 
 import pyperclip
-
 from PyQt5.QtWidgets import QMessageBox
 
 
@@ -14,10 +15,11 @@ def selectSide(self):
     msg_side.exec_()
     if msg_side.clickedButton() == server_button:
         checkNetwork(self)
-        # extractIp(self)
+        extractIp(self)
         server(self)
     elif msg_side.clickedButton() == client_button:
         checkNetwork(self)
+        client(self)
 
 
 # 检查网络连接
@@ -35,40 +37,46 @@ def checkNetwork(self):
 def extractIp(self):
     st = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     st.connect(('10.255.255.255', 1))
-    self.serverIp = st.getsockname()[0]
-    pyperclip.copy(self.serverIp)
-    QMessageBox.information(self, "房间信息", "IP：" + self.serverIp + "，已复制到剪贴板")
+    self.server_ip = st.getsockname()[0]
+    pyperclip.copy(self.server_ip)
+    QMessageBox.information(self, "房间信息", "IP：" + self.server_ip + "，已复制到剪贴板")
 
 
 # 服务端
 def server(self):
-    while True:  # 无限循环，持续监听
-        # 创建socket
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # 绑定监听IP端口
-        print((self.serverIp, self.serverPort))
-        server_socket.bind((self.serverIp, self.serverPort))
-        # 设置最大连接数
-        server_socket.listen(5)
-        server_socket.settimeout(10000)
-        print(u'waiting for connect...')
+    # 绑定IP端口
+    self.tcp_server.bind((self.server_ip, self.server_port))
+    # 最大连接数
+    self.tcp_server.listen(5)
+    threading.Thread(target=partial(startServerListen, self)).start()
+
+
+# 服务端监听线程
+def startServerListen(self):
+    while True:
         try:
-            # 接受连接
-            connect, (host, port) = server_socket.accept()
-            print(f"Connected by {host}:{port}")
+            print('房间创建成功, 等待对方加入...')
+            self.tcp_socket, address = self.tcp_server.accept()
+            print('对方已加入, 可以开始游戏')
+            data = {'x': 0, 'y': 0, 'color': True}
+            self.tcp_socket.sendall(json.dumps(data).encode('utf-8'))
+            self.receiveData()
+        except:
+            break
 
-            while True:  # 持续接收数据
-                data = connect.recv(1024)
-                if not data:
-                    break  # 如果没有接收到数据，跳出循环，关闭连接
-                print(data.decode('utf-8'))
-                self.chess_coord.append(json.loads(data.decode('utf-8')))
-                self.update()
-        except socket.timeout:
-            print("Waiting for a connection...")
-        finally:
-            # 关闭连接
-            connect.close()
 
-    # 结束socket（注意：这里的关闭操作实际上永远不会执行，因为while True是无限循环）
-    server_socket.close()
+# 客户端
+def client(self):
+    self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.tcp_socket.connect((self.server_ip, self.server_port))
+    data = {'x': 1, 'y': 1, 'color': False}
+    self.tcp_socket.sendall(json.dumps(data).encode('utf-8'))
+    print('已经加入房间, 可以开始游戏')
+    threading.Thread(target=partial(receiveData, self)).start()
+
+
+# 接收数据
+def receiveData(self):
+    while True:
+        data = self.tcp_socket.recv(1024)
+        self.chess_coord.append(json.loads(data.decode('utf-8')))
