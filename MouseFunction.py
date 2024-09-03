@@ -31,13 +31,20 @@ def containerMouseClicked(self, event):
     if coord:
         # 将棋子坐标添加到列表中
         self.chess_coord.append(coord)
-    # 切换颜色
-    self.chess_color = not self.chess_color
-    aiGame(self)
-    # 重绘
-    self.update()
-    # 判断是否胜利
-    checkWin(self)
+        # 判断是否胜利
+        if checkWin(self):
+            return
+        # 切换颜色
+        self.chess_color = not self.chess_color
+        # 判断是否是人机模式
+        if self.game_mode == 1:
+            # AI行动
+            aiGame(self)
+            # 判断是否胜利
+            if checkWin(self):
+                return
+        # 重绘
+        self.update()
 
 
 # 重写后的container鼠标移动事件

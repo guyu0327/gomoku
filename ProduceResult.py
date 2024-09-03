@@ -13,13 +13,14 @@ def checkWin(self):
         QMessageBox.information(self, "游戏结束", f"恭喜{'黑方' if color else '白方'}胜利！",
                                 QMessageBox.Yes, QMessageBox.Yes)
         startGame(self)
-        return
+        return True
     # 判断棋盘空间是否已满
     if len(self.chess_coord) == 225:
         QMessageBox.information(self, "游戏结束", f"棋盘已满，平局结束！",
                                 QMessageBox.Yes, QMessageBox.Yes)
         startGame(self)
-        return
+        return True
+    return False
 
 
 # 计算连接数

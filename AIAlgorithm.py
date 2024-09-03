@@ -17,9 +17,6 @@ def selectSquads(self):
 
 # 人机对战AI算法
 def aiGame(self):
-    # 判断是否是人机模式
-    if self.game_mode != 1:
-        return
     ai_coord = strategy(self)
     self.chess_coord.append({'x': ai_coord[0], 'y': ai_coord[1], 'color': self.chess_color})
     # 切换颜色
@@ -41,14 +38,14 @@ def strategy(self):
     for i in range(self.chessboard):
         for j in range(self.chessboard):
             if self.chess_color:
-                if (i + 1, j + 1) in board[0]:
+                if (i, j) in board[0]:
                     table[i, j] = -1
-                elif (i + 1, j + 1) in board[1]:
+                elif (i, j) in board[1]:
                     table[i, j] = 1
             else:
-                if (i + 1, j + 1) in board[0]:
+                if (i, j) in board[0]:
                     table[i, j] = 1
-                elif (i + 1, j + 1) in board[1]:
+                elif (i, j) in board[1]:
                     table[i, j] = -1
 
     # 判断自己是否先手
@@ -63,7 +60,7 @@ def strategy(self):
                     score_table[(i, j)] = heuristic(self, table)
                     table[i, j] = 0
         self_position = randomChoose(score_table)
-        return self_position[0] + 1, self_position[1] + 1
+        return self_position[0], self_position[1]
 
 
 # 计分规则
