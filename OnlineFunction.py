@@ -6,8 +6,6 @@ from functools import partial
 import pyperclip
 from PyQt5.QtWidgets import QMessageBox
 
-from MouseFunction import render
-
 
 # 选择服务端或客户端
 def selectSide(self):
@@ -75,6 +73,7 @@ def client(self):
 
 # 接收数据
 def receiveData(self):
+    from MouseFunction import render
     while True:
         try:
             data = self.tcp_socket.recv(1024)

@@ -35,7 +35,8 @@ def containerMouseClicked(self, event):
     if coord:
         # 将棋子坐标添加到列表中
         self.chess_coord.append(coord)
-        self.tcp_socket.sendall(json.dumps(coord).encode('utf-8'))
+        if self.game_mode == 2:
+            self.tcp_socket.sendall(json.dumps(coord).encode('utf-8'))
         render(self)
 
 
