@@ -52,6 +52,8 @@ class MainWindow(QMainWindow):
         self.chess_coord = []
         # 棋子颜色
         self.chess_color = True
+        # 在线对战 棋手 颜色
+        self.chess_color_online = None
         # 棋子大小
         self.chess_size = self.grid_size / 1.2
         # 预要落子的坐标
@@ -61,9 +63,9 @@ class MainWindow(QMainWindow):
         self.game_mode = 0
 
         # 服务端IP
-        self.server_ip = '192.168.1.179'
+        self.server_ip = '192.168.137.1'
         # 服务端口
-        self.server_port = 25565
+        self.server_port = 8080
         # TCP/IP服务器
         self.tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # TCP/IP的socket

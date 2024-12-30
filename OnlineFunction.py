@@ -6,6 +6,8 @@ from functools import partial
 import pyperclip
 from PyQt5.QtWidgets import QMessageBox
 
+from MouseFunction import render
+
 
 # 选择服务端或客户端
 def selectSide(self):
@@ -57,10 +59,8 @@ def startServerListen(self):
         try:
             print('房间创建成功, 等待对方加入...')
             self.tcp_socket, address = self.tcp_server.accept()
+            receiveData(self)
             print('对方已加入, 可以开始游戏')
-            data = {'x': 0, 'y': 0, 'color': True}
-            self.tcp_socket.sendall(json.dumps(data).encode('utf-8'))
-            self.receiveData()
         except:
             break
 
@@ -69,10 +69,8 @@ def startServerListen(self):
 def client(self):
     self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     self.tcp_socket.connect((self.server_ip, self.server_port))
-    data = {'x': 1, 'y': 1, 'color': False}
-    self.tcp_socket.sendall(json.dumps(data).encode('utf-8'))
-    print('已经加入房间, 可以开始游戏')
     threading.Thread(target=partial(receiveData, self)).start()
+    print('已经加入房间, 可以开始游戏')
 
 
 # 接收数据
@@ -80,3 +78,4 @@ def receiveData(self):
     while True:
         data = self.tcp_socket.recv(1024)
         self.chess_coord.append(json.loads(data.decode('utf-8')))
+        render(self)

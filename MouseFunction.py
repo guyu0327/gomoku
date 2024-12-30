@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 
 from AIAlgorithm import aiGame
@@ -27,28 +29,45 @@ def calculateCoord(self, event):
 
 # 重写后的container鼠标点击事件
 def containerMouseClicked(self, event):
+    if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
+        return
     coord = calculateCoord(self, event)
     if coord:
         # 将棋子坐标添加到列表中
         self.chess_coord.append(coord)
+        self.tcp_socket.sendall(json.dumps(coord).encode('utf-8'))
+        render(self)
+
+
+# 渲染当前棋子布局
+def render(self):
+    # 重绘
+    self.update()
+    # 判断是否胜利
+    if checkWin(self):
+        return
+    # 切换颜色
+    self.chess_color = not self.chess_color
+    # 判断是否是人机模式
+    if self.game_mode == 1:
+        # AI行动
+        aiGame(self)
         # 判断是否胜利
         if checkWin(self):
             return
-        # 切换颜色
-        self.chess_color = not self.chess_color
-        # 判断是否是人机模式
-        if self.game_mode == 1:
-            # AI行动
-            aiGame(self)
-            # 判断是否胜利
-            if checkWin(self):
-                return
-        # 重绘
-        self.update()
+    if self.game_mode == 2:
+        if self.chess_color_online is None:
+            self.chess_color_online = self.chess_color
+    # 重绘
+    self.update()
 
 
 # 重写后的container鼠标移动事件
 def containerMouseMove(self, event):
+    if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
+        self.advance_chess_coord = None
+        self.update()
+        return
     coord = calculateCoord(self, event)
     if coord:
         coord['calculate'] = True
