@@ -58,6 +58,7 @@ def startServerListen(self):
             self.tcp_socket, address = self.tcp_server.accept()
             receiveData(self)
             self.player_ready = True
+            self.chess_color_online = True
             print('对方已加入, 可以开始游戏')
         except:
             break
@@ -82,6 +83,7 @@ def client(self):
 
     threading.Thread(target=partial(receiveData, self)).start()
     self.player_ready = True
+    self.chess_color_online = False
     print('已经加入房间, 可以开始游戏')
 
 
