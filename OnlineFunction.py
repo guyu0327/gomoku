@@ -46,8 +46,8 @@ def extractIp(self):
 def server(self):
     # 绑定IP端口
     self.tcp_server.bind((self.server_ip, self.server_port))
-    # 最大连接数
-    self.tcp_server.listen(5)
+    # 可设置最大连接数
+    self.tcp_server.listen()
     threading.Thread(target=partial(startServerListen, self)).start()
 
 
@@ -60,7 +60,7 @@ def startServerListen(self):
             print('对方已加入, 可以开始游戏')
             data = {'x': 0, 'y': 0, 'color': True}
             self.tcp_socket.sendall(json.dumps(data).encode('utf-8'))
-            self.receiveData()
+            receiveData(self)
         except:
             break
 
@@ -78,5 +78,15 @@ def client(self):
 # 接收数据
 def receiveData(self):
     while True:
-        data = self.tcp_socket.recv(1024)
-        self.chess_coord.append(json.loads(data.decode('utf-8')))
+        try:
+            data = self.tcp_socket.recv(1024)
+            if data:
+                self.chess_coord.append(json.loads(data.decode('utf-8')))
+            else:
+                break
+        except socket.timeout:
+            print("接收数据超时，正在重试...")
+            continue
+        except Exception as e:
+            print(f"接收数据时发生错误：{e}")
+            break
