@@ -26,7 +26,6 @@ def selectSide(self):
 def checkNetwork(self):
     try:
         # 超时时间
-        socket.setdefaulttimeout(5)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(('www.baidu.com', 80))
     except socket.error as ex:
         QMessageBox.critical(self, "网络连接异常", "当前网络不可用，请检查您的网络状态\n" + str(ex))
