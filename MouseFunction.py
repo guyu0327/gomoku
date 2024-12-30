@@ -37,14 +37,14 @@ def containerMouseClicked(self, event):
         self.chess_coord.append(coord)
         if self.game_mode == 2:
             self.tcp_socket.sendall(json.dumps(coord).encode('utf-8'))
+    if self.game_mode == 2:
+        if self.chess_color_online is None:
+            self.chess_color_online = self.chess_color
         render(self)
 
 
 # 渲染当前棋子布局
 def render(self):
-    if self.game_mode == 2:
-        if self.chess_color_online is None:
-            self.chess_color_online = self.chess_color
     # 重绘
     self.update()
     # 判断是否胜利
