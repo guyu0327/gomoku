@@ -1,9 +1,9 @@
 import json
 import socket
 import threading
-import pyperclip
-
 from functools import partial
+
+import pyperclip
 from PyQt5.QtWidgets import QMessageBox, QInputDialog
 
 
@@ -56,7 +56,7 @@ def startServerListen(self):
         try:
             print('房间创建成功, 等待对方加入...')
             self.tcp_socket, address = self.tcp_server.accept()
-            receiveData(self)
+            threading.Thread(target=partial(receiveData, self)).start()
             self.player_ready = True
             self.chess_color_online = True
             print('对方已加入, 可以开始游戏')
