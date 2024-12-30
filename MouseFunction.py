@@ -29,7 +29,7 @@ def calculateCoord(self, event):
 
 # 重写后的container鼠标点击事件
 def containerMouseClicked(self, event):
-    if not self.player_ready:
+    if self.game_mode == 2 and not self.player_ready:
         return
     if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
         return
@@ -51,6 +51,7 @@ def render(self):
         return
     # 切换颜色
     self.chess_color = not self.chess_color
+    self.status.showMessage(f"等待{'黑方' if self.chess_color else '白方'}落子")
     # 判断是否是人机模式
     if self.game_mode == 1:
         # AI行动
@@ -64,7 +65,7 @@ def render(self):
 
 # 重写后的container鼠标移动事件
 def containerMouseMove(self, event):
-    if not self.player_ready:
+    if self.game_mode == 2 and not self.player_ready:
         return
     if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
         self.advance_chess_coord = None

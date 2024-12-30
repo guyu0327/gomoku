@@ -54,12 +54,12 @@ def server(self):
 def startServerListen(self):
     while True:
         try:
-            print('房间创建成功, 等待对方加入...')
+            self.status.showMessage('房间创建成功, 等待对方加入...')
             self.tcp_socket, address = self.tcp_server.accept()
             threading.Thread(target=partial(receiveData, self)).start()
             self.player_ready = True
             self.chess_color_online = True
-            print('对方已加入, 可以开始游戏')
+            self.status.showMessage('对方已加入, 可以开始游戏')
         except:
             break
 
@@ -84,7 +84,7 @@ def client(self):
     threading.Thread(target=partial(receiveData, self)).start()
     self.player_ready = True
     self.chess_color_online = False
-    print('已经加入房间, 可以开始游戏')
+    self.status.showMessage('您已经加入房间, 请等待房主开始游戏')
 
 
 # 接收数据

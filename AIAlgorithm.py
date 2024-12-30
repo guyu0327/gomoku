@@ -21,6 +21,7 @@ def aiGame(self):
     self.chess_coord.append({'x': ai_coord[0], 'y': ai_coord[1], 'color': self.chess_color})
     # 切换颜色
     self.chess_color = not self.chess_color
+    self.status.showMessage(f"等待{'黑方' if self.chess_color else '白方'}落子")
 
 
 # 开始计算

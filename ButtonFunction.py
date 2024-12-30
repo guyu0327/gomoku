@@ -53,6 +53,7 @@ def selectMode(self):
 def startGame(self):
     self.chess_coord = []
     self.chess_color = True
+    self.status.showMessage("等待黑方落子")
     self.update()
     if self.game_mode == 1:
         selectSquads(self)
