@@ -42,6 +42,9 @@ def containerMouseClicked(self, event):
 
 # 渲染当前棋子布局
 def render(self):
+    if self.game_mode == 2:
+        if self.chess_color_online is None:
+            self.chess_color_online = self.chess_color
     # 重绘
     self.update()
     # 判断是否胜利
@@ -56,9 +59,6 @@ def render(self):
         # 判断是否胜利
         if checkWin(self):
             return
-    if self.game_mode == 2:
-        if self.chess_color_online is None:
-            self.chess_color_online = self.chess_color
     # 重绘
     self.update()
 
