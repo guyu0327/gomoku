@@ -52,8 +52,6 @@ class MainWindow(QMainWindow):
         self.chess_coord = []
         # 棋子颜色
         self.chess_color = True
-        # 在线对战 棋手 颜色
-        self.chess_color_online = None
         # 棋子大小
         self.chess_size = self.grid_size / 1.2
         # 预要落子的坐标
@@ -70,6 +68,10 @@ class MainWindow(QMainWindow):
         self.tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # TCP/IP的socket
         self.tcp_socket = None
+
+        # 在线对战 棋手 颜色
+        self.chess_color_online = None
+        self.player_ready = False
 
         # 初始化UI
         initUI(self)
