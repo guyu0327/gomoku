@@ -29,6 +29,8 @@ def calculateCoord(self, event):
 
 # 重写后的container鼠标点击事件
 def containerMouseClicked(self, event):
+    if not self.player_ready:
+        return
     if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
         return
     coord = calculateCoord(self, event)
@@ -65,6 +67,8 @@ def render(self):
 
 # 重写后的container鼠标移动事件
 def containerMouseMove(self, event):
+    if not self.player_ready:
+        return
     if self.chess_color != self.chess_color_online and self.chess_color_online is not None:
         self.advance_chess_coord = None
         self.update()
