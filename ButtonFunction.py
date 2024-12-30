@@ -45,6 +45,8 @@ def selectMode(self):
     if msg.clickedButton() == exit_button:
         exit()
     startGame(self)
+    if self.game_mode == 2:
+        selectSide(self)
 
 
 # 开始游戏
@@ -54,8 +56,6 @@ def startGame(self):
     self.update()
     if self.game_mode == 1:
         selectSquads(self)
-    if self.game_mode == 2:
-        selectSide(self)
 
 
 # 悔棋

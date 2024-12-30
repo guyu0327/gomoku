@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
         self.game_mode = 0
 
         # 服务端IP
-        self.server_ip = '192.168.43.9'
+        self.server_ip = ''
         # 服务端口
         self.server_port = 8080
         # TCP/IP服务器

@@ -1,10 +1,10 @@
 import json
 import socket
 import threading
-from functools import partial
-
 import pyperclip
-from PyQt5.QtWidgets import QMessageBox
+
+from functools import partial
+from PyQt5.QtWidgets import QMessageBox, QInputDialog
 
 
 # 选择服务端或客户端
@@ -65,7 +65,20 @@ def startServerListen(self):
 # 客户端
 def client(self):
     self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.tcp_socket.connect((self.server_ip, self.server_port))
+    text, ok = QInputDialog.getText(None, "输入框", "请输入房间IP：")
+    if ok and text != '':
+        print("你输入的内容是：", text)
+        self.server_ip = text
+    else:
+        print("用户取消了输入或没有输入内容")
+        return selectSide(self)
+
+    try:
+        self.tcp_socket.connect((self.server_ip, self.server_port))
+    except socket.error as e:
+        QMessageBox.critical(self, "网络连接异常", "无法连接到服务器，请检查IP地址是否正确\n" + str(e))
+        selectSide(self)
+
     threading.Thread(target=partial(receiveData, self)).start()
     print('已经加入房间, 可以开始游戏')
 
