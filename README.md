@@ -8,4 +8,5 @@
 - [ButtonFunction](ButtonFunction.py) —— 按钮相关函数
 - [MouseFunction](MouseFunction.py) —— 鼠标相关函数
 - [ProduceResult](ProduceResult.py) —— 判断对局结果
-- [AIAlgorithm](AIAlgorithm.py) —— 游戏类
+- [AIAlgorithm](AIAlgorithm.py) —— 人机对战类
+- [OnlineFunction](OnlineFunction.py) —— 人机对战类
