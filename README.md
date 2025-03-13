@@ -9,4 +9,4 @@
 - [MouseFunction](MouseFunction.py) —— 鼠标相关函数
 - [ProduceResult](ProduceResult.py) —— 判断对局结果
 - [AIAlgorithm](AIAlgorithm.py) —— 人机对战类
-- [OnlineFunction](OnlineFunction.py) —— 人机对战类
+- [OnlineFunction](OnlineFunction.py) —— 局域网联机对战类
