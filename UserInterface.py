@@ -29,7 +29,7 @@ def drawChessboard(self):
     painter.setBrush(QBrush(QColor("black")))
 
     # 绘制方格线
-    for i in range(15):
+    for i in range(self.chessboard):
         # 设置线的粗细
         pen = QPen(QColor("black"), 2) if i == 3 or i == 11 else QPen(QColor("black"), 1)
         painter.setPen(pen)

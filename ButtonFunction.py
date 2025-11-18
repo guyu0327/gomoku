@@ -37,13 +37,22 @@ def initButton(self):
 # 选择模式
 def selectMode(self):
     msg = QMessageBox(QMessageBox.Question, "选择", "请选择游戏模式")
-    msg.addButton(self.tr("单机"), QMessageBox.AcceptRole)
-    msg.addButton(self.tr("人机"), QMessageBox.AcceptRole)
-    msg.addButton(self.tr("联机"), QMessageBox.AcceptRole)
+    single_button = msg.addButton(self.tr("单机"), QMessageBox.AcceptRole)
+    ai_button = msg.addButton(self.tr("人机"), QMessageBox.AcceptRole)
+    online_button = msg.addButton(self.tr("联机"), QMessageBox.AcceptRole)
+    deepseek_button = msg.addButton(self.tr("DeepSeek"), QMessageBox.AcceptRole)
     exit_button = msg.addButton(self.tr("退出"), QMessageBox.AcceptRole)
-    self.game_mode = msg.exec_()
+    msg.exec_()
     if msg.clickedButton() == exit_button:
         exit()
+    elif msg.clickedButton() == single_button:
+        self.game_mode = 0
+    elif msg.clickedButton() == ai_button:
+        self.game_mode = 1
+    elif msg.clickedButton() == online_button:
+        self.game_mode = 2
+    elif msg.clickedButton() == deepseek_button:
+        self.game_mode = 3
     startGame(self)
     if self.game_mode == 2:
         selectSide(self)
@@ -55,7 +64,8 @@ def startGame(self):
     self.chess_color = True
     self.status.showMessage("等待黑方落子")
     self.update()
-    if self.game_mode == 1:
+    # 如果游戏模式为人机或DeepSeek，则需要选择黑白方
+    if self.game_mode == 1 or self.game_mode == 3:
         selectSquads(self)
 
 

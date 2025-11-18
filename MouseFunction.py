@@ -17,8 +17,8 @@ def calculateCoord(self, event):
             or y > self.chessboard_size_move + 10:
         return False
     # 计算落子位置
-    x = np.round((x - self.chessboard_move) / self.grid_size)
-    y = np.round((y - self.chessboard_move) / self.grid_size)
+    x = int(np.round((x - self.chessboard_move) / self.grid_size))
+    y = int(np.round((y - self.chessboard_move) / self.grid_size))
 
     # 判断位置上是否已有棋子
     if any(coord['x'] == x and coord['y'] == y for coord in self.chess_coord):
@@ -53,7 +53,7 @@ def render(self):
     self.chess_color = not self.chess_color
     self.status.showMessage(f"等待{'黑方' if self.chess_color else '白方'}落子")
     # 判断是否是人机模式
-    if self.game_mode == 1:
+    if self.game_mode == 1 or self.game_mode == 3:
         # AI行动
         aiGame(self)
         # 判断是否胜利

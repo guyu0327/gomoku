@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.main_height = int(self.screen_rect.height() * 0.55)
         # 设置主窗口位置
         self.main_move_x = (self.screen_rect.width() - self.main_width) // 2
-        self.main_move_y = (self.screen_rect.height() - self.main_width) // 2
+        self.main_move_y = (self.screen_rect.height() - self.main_height) // 2
         # 状态栏
         self.status = self.statusBar()
 
@@ -71,7 +71,26 @@ class MainWindow(QMainWindow):
 
         # 在线对战 棋手 颜色
         self.chess_color_online = None
+        # 联机模式判断双方是否已经加入游戏
         self.player_ready = False
+
+        # 接口地址
+        self.api_url = "http://localhost/v1/chat-messages"
+        # API密钥
+        self.api_key = "app-Rnfn9bnF9Ygi88vek6smMI4F"
+        # dify接口请求参数
+        self.payload = {
+            "inputs": {},
+            "query": "",
+            "response_mode": "blocking",  # 非流式（"streaming" 为流式）
+            "conversation_id": "",
+            "user": "user-123"
+        }
+        # dify接口请求头
+        self.headers = {
+            "Authorization": f"Bearer {self.api_key}", # 请替换成你的API密钥
+            "Content-Type": "application/json"
+        }
 
         # 初始化UI
         initUI(self)

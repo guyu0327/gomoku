@@ -1,10 +1,12 @@
 from random import choice
 
 import numpy as np
+import requests
+import ast
 from PyQt5.QtWidgets import QMessageBox
 
 
-# 选择阵容
+# 选择黑白方
 def selectSquads(self):
     msg_squads = QMessageBox(QMessageBox.Question, "选择", "请选择您的阵容")
     msg_squads.addButton(self.tr("黑子"), QMessageBox.AcceptRole)
@@ -17,8 +19,15 @@ def selectSquads(self):
 
 # 人机对战AI算法
 def aiGame(self):
-    ai_coord = strategy(self)
-    self.chess_coord.append({'x': ai_coord[0], 'y': ai_coord[1], 'color': self.chess_color})
+    ai_coord = {}
+    # 人机行动
+    if self.game_mode == 1:
+        ai_coord = strategy(self)
+    # deepseek行动
+    if self.game_mode == 3:
+        # 调用接口
+        ai_coord = deepseek(self)
+    self.chess_coord.append(ai_coord)
     # 切换颜色
     self.chess_color = not self.chess_color
     self.status.showMessage(f"等待{'黑方' if self.chess_color else '白方'}落子")
@@ -51,7 +60,7 @@ def strategy(self):
 
     # 判断自己是否先手
     if len(board[0]) == 0 and len(board[1]) == 0:
-        return 7, 7
+        return {'x': 7, 'y': 7, 'color': self.chess_color}
     else:
         score_table = {}
         for i in range(self.chessboard):
@@ -61,7 +70,7 @@ def strategy(self):
                     score_table[(i, j)] = heuristic(self, table)
                     table[i, j] = 0
         self_position = randomChoose(score_table)
-        return self_position[0], self_position[1]
+        return {'x': self_position[0], 'y': self_position[1], 'color': self.chess_color}
 
 
 # 计分规则
@@ -125,3 +134,19 @@ def randomChoose(score_table):
         if item[1] == max_value:
             positions.append(item[0])
     return choice(positions)
+
+
+# 调用dify-deepseek接口
+def deepseek(self):
+    self.payload["query"] = self.chess_coord
+    response = requests.post(self.api_url, json=self.payload, headers=self.headers)
+
+    # 解析结果
+    if response.status_code == 200:
+        data = response.json()
+        print("请求成功：", data)
+        self.payload["conversation_id"] = data["conversation_id"]
+        return ast.literal_eval(data["answer"])
+    else:
+        print("请求失败：", response.status_code, response.text)
+        return {}
